@@ -37,34 +37,46 @@ class Solution:
         validNumbers = [i for i in range(1, 50)]
 
         nums = []
+        dateCheck = False
         path = pathlib.Path(__file__).parent.resolve()
-        f = open("{}/649Numbers_2".format(path), "r")
+        dateReg = '^["](19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])["]$'
+
+        f = open("{}/649.csv".format(path), "r")
         for line in f:
-            only_number = re.sub('[^0-9]', '', line)
+            lineContents = []
+            lineSplit = line.split(',')
 
-            if only_number != '' :
-                if int(only_number) in validNumbers:
-                    nums.append(int(only_number))
+            for c in lineSplit:
+                if dateCheck:
+                    only_number = re.sub('[^0-9]', '', c)
+                    if only_number != '' :
+                        if int(only_number) in validNumbers:
+                            lineContents.append(int(only_number))
 
-            if len(nums) == 7:
-                numbersByIndex.append(nums)
-                nums = []
-
-
-        return numbersByIndex
+                if len(lineContents) == 7:
+                    numbersByIndex.append(lineContents)
+                    lineContents = []
+                    dateCheck = False
+                if re.findall(dateReg, c):
+                    dateCheck = True
+                    
+        return numbersByIndex[::-1]
 
         
 test = Solution()
-test.countFreqNumber()
+test.returnNumbers()
 
 # test.countFreqNumber(bounsIncluded=False)
 # test.countFreqNumber(bounsIncluded=True)
+
 
 # test.countFreqNumber(numberOfOutput=100)
 # test.countFreqNumber(numberOfOutput=10)
 # test.countFreqNumber(numberOfOutput=5)
 # test.countFreqNumber(numberOfOutput=-1)
 
+# test.countFreqNumber(numberOfRecordIncluded=10000)
+# test.countFreqNumber(numberOfRecordIncluded=1000)
 # test.countFreqNumber(numberOfRecordIncluded=100)
 # test.countFreqNumber(numberOfRecordIncluded=10)
 # test.countFreqNumber(numberOfRecordIncluded=5)
